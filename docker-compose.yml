@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  web:
+    image: go-vite-dev
+    build: ./  
+    working_dir: /code
+    tty: true
+    volumes: 
+      - ./:/code
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - mysql
+
+networks:
+  mysql:
+    external: true
