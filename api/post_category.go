@@ -4,6 +4,7 @@ import (
 	"vvblog/errors/vcode"
 	"vvblog/errors/verror"
 	"vvblog/model"
+	"vvblog/service"
 	"vvblog/utils"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,16 @@ import (
 var PostCategory = new(postCategoryApi)
 
 type postCategoryApi struct{}
+
+func (p *postCategoryApi) Index(c *gin.Context) {
+	var categories []model.PostCategoryListItemRes
+	if err := model.DB.Model(&model.PostCategory{}).Order("sort, id DESC").Scan(&categories).Error; err != nil {
+		panic(verror.WrapCode(vcode.CodeDbOperationError, err))
+	}
+	utils.JsonSuccess(c, gin.H{
+		"list": categories,
+	})
+}
 
 func (p *postCategoryApi) Create(c *gin.Context) {
 	var req model.PostCategoryCreateReq
@@ -29,6 +40,31 @@ func (p *postCategoryApi) Create(c *gin.Context) {
 
 	if err := model.DB.Create(&model.PostCategory{Name: req.Name, Sort: *req.Sort}).Error; err != nil {
 		panic(verror.WrapCode(vcode.CodeDbOperationError, err))
+	}
+
+	utils.JsonSuccess(c)
+}
+
+func (p *postCategoryApi) Update(c *gin.Context) {
+	id := c.Param("id")
+	service.V.CheckPositiveInt(id, "id")
+	var req model.PostCategoryUpdateReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		panic(verror.WrapCode(vcode.CodeInvalidParameter, err))
+	}
+
+	data := map[string]interface{}{}
+	if req.Name != nil {
+		data["name"] = req.Name
+	}
+	if req.Sort != nil {
+		data["sort"] = req.Sort
+	}
+
+	if len(data) > 0 {
+		if err := model.DB.Model(&model.PostCategory{}).Where("id", id).UpdateColumns(data).Error; err != nil {
+			panic(verror.WrapCode(vcode.CodeDbOperationError, err))
+		}
 	}
 
 	utils.JsonSuccess(c)

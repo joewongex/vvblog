@@ -169,7 +169,7 @@ func (p *postApi) Show(c *gin.Context) {
 
 	var post model.PostDetailRes
 	err := model.DB.Table("post AS p").
-		Joins("JOIN post_2_category pc ON pc.post_id = p.id").
+		Joins("LEFT JOIN post_2_category pc ON pc.post_id = p.id").
 		Where("p.id = ?", id).
 		Select("p.id, p.title, p.content, p.draft, GROUP_CONCAT(pc.post_category_id) category_ids_str").
 		Group("p.id").
@@ -180,7 +180,7 @@ func (p *postApi) Show(c *gin.Context) {
 		panic(verror.WrapCode(vcode.CodeDbOperationError, err))
 	}
 
-	if post.ID > 0 {
+	if post.ID > 0 && post.CategoryIdsStr != "" {
 		ids := strings.Split(post.CategoryIdsStr, ",")
 		for _, id := range ids {
 			idInt, _ := strconv.Atoi(id)

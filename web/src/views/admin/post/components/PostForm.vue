@@ -61,6 +61,7 @@ const submit = async (draft) => {
 
 // post 是异步查询的
 const unwatch = watch(() => prop.modelValue, post => {
+  console.log('modulevalue', post)
   editor.setMarkdown(post.content)
   unwatch()
 })
@@ -88,6 +89,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  console.log('onUnmounted')
   editor.destroy()
 })
 </script>

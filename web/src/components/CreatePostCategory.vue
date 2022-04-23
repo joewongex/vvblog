@@ -37,7 +37,6 @@ const submit = async () => {
 }
 
 const cancel = () => {
-  // visible.value = false
   emit('update:modelValue', false)
 }
 </script>

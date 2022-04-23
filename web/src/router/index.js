@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { getUserInfo } from '@/hooks/user'
+import { useAppStore } from '@/store/app'
 
 const router = createRouter({
   routes: [
@@ -44,6 +45,10 @@ const router = createRouter({
 router.beforeEach(to => {
   const userInfo = getUserInfo()
   let isTokenValid = false
+
+  const appStore = useAppStore()
+  appStore.showProgressBar()
+
   if (userInfo && userInfo.exp > Date.parse(new Date()) / 1000) {
     isTokenValid = true
   }
@@ -54,6 +59,11 @@ router.beforeEach(to => {
   if (to.name == 'Login' && isTokenValid) {
     return { name: 'AdminPostList', replace: true }
   }
+})
+
+router.afterEach(() => {
+  const appStore = useAppStore()
+  appStore.hideProgressBar()
 })
 
 export default router

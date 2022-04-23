@@ -2,11 +2,17 @@
 import { ArrowDown, Tickets, CollectionTag } from '@element-plus/icons-vue'
 import { getUserInfo, clearToken } from '@/hooks/user';
 import { useRoute, useRouter } from 'vue-router';
+import { useAppStore } from '@/store/app';
 import axios from '@/utils/request'
+import { storeToRefs } from 'pinia';
+import { ref, watch } from 'vue';
 
 const user = getUserInfo()
 const router = useRouter()
 const route = useRoute()
+const appStore = useAppStore()
+const { progressBarVisible } = storeToRefs(appStore)
+
 const handleCommand = async command => {
   switch (command) {
     case 'logout':
@@ -26,6 +32,9 @@ const handleMenuSelected = (index) => {
 
 <template>
   <el-container class="container">
+    <div class="progress-bar" v-show="progressBarVisible">
+      <el-progress :percentage="100" :indeterminate="true" :show-text="false" status="success" :stroke-width="3" />
+    </div>
     <el-header class="header">
       <div class="header__log">
         <img src="@/assets/logo.png" alt="LOGO" />
@@ -82,21 +91,30 @@ body,
 .container {
   height: 100vh;
 }
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #409eff;
+
   &__log {
     position: relative;
     top: 3px;
+
     img {
       height: 50px;
     }
   }
-  &__profile {
-  }
+
+  &__profile {}
 }
+
 .aside {
   &__title {
     padding: 15px;

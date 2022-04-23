@@ -33,6 +33,8 @@ func Setup(r *gin.Engine) {
 			postCategoryG.Use(middleware.Auth())
 			postCategoryG.GET("/options", api.PostCategory.Options)
 			postCategoryG.POST("", api.PostCategory.Create)
+			postCategoryG.PUT("/:id", api.PostCategory.Update)
+			postCategoryG.GET("", api.PostCategory.Index)
 		}
 	}
 }
