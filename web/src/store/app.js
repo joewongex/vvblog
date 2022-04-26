@@ -4,7 +4,8 @@ export const useAppStore = defineStore({
   id: 'app',
   state: () => {
     return {
-      progressBarVisible: false
+      progressBarVisible: false,
+      menuIndex: 'AdminPostList'
     }
   },
   actions: {
@@ -13,6 +14,9 @@ export const useAppStore = defineStore({
     },
     hideProgressBar() {
       this.progressBarVisible = false
+    },
+    setMenuIndex(index) {
+      this.menuIndex = index
     }
   }
 })

@@ -1,17 +1,17 @@
 <script setup>
+import { ref } from 'vue'
 import { ArrowDown, Tickets, CollectionTag } from '@element-plus/icons-vue'
 import { getUserInfo, clearToken } from '@/hooks/user';
 import { useRoute, useRouter } from 'vue-router';
 import { useAppStore } from '@/store/app';
 import axios from '@/utils/request'
 import { storeToRefs } from 'pinia';
-import { ref, watch } from 'vue';
 
 const user = getUserInfo()
 const router = useRouter()
 const route = useRoute()
 const appStore = useAppStore()
-const { progressBarVisible } = storeToRefs(appStore)
+const { progressBarVisible, menuIndex } = storeToRefs(appStore)
 
 const handleCommand = async command => {
   switch (command) {
@@ -58,7 +58,7 @@ const handleMenuSelected = (index) => {
     <el-container style="overflow: hidden;">
       <el-aside width="200px" class="aside">
         <div class="aside__title">系统菜单</div>
-        <el-menu @select="handleMenuSelected">
+        <el-menu @select="handleMenuSelected" :default-active="menuIndex">
           <el-menu-item index="AdminPostList">
             <el-icon>
               <tickets />
@@ -72,6 +72,12 @@ const handleMenuSelected = (index) => {
             </el-icon>
             <span>文章分类</span>
           </el-menu-item>
+
+          <el-sub-menu index="ParentMenu">
+            <template #title>父菜单</template>
+            <el-menu-item index="SubMenu1">子菜单1</el-menu-item>
+            <el-menu-item index="SubMenu2">子菜单2</el-menu-item>
+          </el-sub-menu>
         </el-menu>
       </el-aside>
       <el-container class="main">

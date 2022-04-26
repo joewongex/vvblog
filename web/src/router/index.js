@@ -15,6 +15,9 @@ const router = createRouter({
       meta: {
         auth: true
       },
+      redirect: {
+        name: 'AdminPostList'
+      },
       children: [
         {
           path: 'posts',
@@ -25,16 +28,32 @@ const router = createRouter({
           path: 'posts/create',
           component: () => import(/* webpackChunkName: "admin_post" */'@/views/admin/post/Create.vue'),
           name: 'AdminPostCreate',
+          meta: {
+            menuIndex: 'AdminPostList'
+          }
         },
         {
           path: 'posts/:id/edit',
           component: () => import(/* webpackChunkName: "admin_post" */'@/views/admin/post/Edit.vue'),
           name: 'AdminPostEdit',
+          meta: {
+            menuIndex: 'AdminPostList'
+          }
         },
         {
           path: 'post-categories',
           component: () => import(/* webpackChunkName: "admin_post_category" */'@/views/admin/postCategory/List.vue'),
           name: 'AdminPostCategoryList'
+        },
+        {
+          path: 'sub-menu1',
+          component: () => import('@/views/admin/SubMenu1.vue'),
+          name: 'SubMenu1'
+        },
+        {
+          path: 'sub-menu2',
+          component: () => import('@/views/admin/SubMenu2.vue'),
+          name: 'SubMenu2'
         }
       ]
     }
@@ -61,9 +80,12 @@ router.beforeEach(to => {
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to) => {
   const appStore = useAppStore()
   appStore.hideProgressBar()
+  if (to.meta.auth) {
+    appStore.setMenuIndex(to.meta.menuIndex ? to.meta.menuIndex : to.name)
+  }
 })
 
 export default router
