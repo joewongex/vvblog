@@ -5,10 +5,14 @@ import { useAppStore } from '@/store/app'
 const router = createRouter({
   routes: [
     {
+      path: '/',
+      component: () => import(/* webpackChunckName: "front" */'@/views/front/Layout.vue'),      
+    },
+    {
       path: '/admin/login',
       component: () => import(/* webpackChunkName: "admin_login" */'@/views/admin/Login.vue'),
       name: 'Login'
-    },
+    },    
     {
       path: '/admin',
       component: () => import(/* webpackChunkName: "admin" */'@/views/admin/Layout.vue'),
